@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id='vidCont'>
+        <video autoplay muted loop id='bg-video'>
+            <source src='./assets/media/video.mp4' type='video/mp4'>
+        </video>
+    </div>
+
+    <div id='formCont'>
+        <form method="post" action="php" id="form">
+            <div class="form">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome" placeholder="Inserisci il tuo nome" required>
+            </div>
+            <div class="form">
+                <label for="cognome">Cognome:</label>
+                <input type="text" name ="cognome" id="cognome" placeholder="Inserisci il tuo cognome" required>
+            </div>
+            <div class="form">
+                <label for="email">E-mail:</label>
+                <input type="text" name ="email" id="email" placeholder="Inserisci la tua email" required>
+            </div>
+            <div class="form">
+                <label for="password">Password:</label>
+                <input type="password" name ="password" id="password" placeholder="Scegli la password" required>
+            </div>
+            <div class="form">
+                <label for="indirizzo">Addresses:</label>
+                <input type="address" name ="Indirizzo" id="indirizzo" placeholder="Inserisci la tua via" required>
+            </div>
+            <div class="form">
+                <label for="citta">Città:</label>
+                <input type="text" name ="citta" id="citta" placeholder="Inserisci la tua città"required>
+            </div>
+            <div class="form">
+                <label for="provincia">Provincia:</label>
+                <input type="text" name ="provincia" id="provincia" placeholder="Inserisci la tua provincia" required>
+            </div>
+            <div class="form">
+                <input type="submit" class="logIn" id="logIn" value="Registrati">
+                <span class="logIn" id="accedi" >Log-in</span>
+            </div>
+        </form>
+    </div>
+
+<!-- MENU LOG IN CHE DOVRà APPARIRE -->
+<div id="overlay">
+    <div id="menuLog" class="hidden">
+        <img src='./assets/icon/account1.png' alt='user icon'>
+        <form id="form2" class="animate">
+            <div id="parent"></div>
+            <div class="menuContent">
+                <!-- appendo qua il messaggio di errore -->
+                <label for="email">E-mail:</label>
+                <input type="text" name ="email" id="email2" placeholder="Inserisci la tua email" required>
+            </div>
+            <div class="menuContent">
+                <label for="password">Password:</label>
+                <input type="password" name ="password" id="password2" placeholder="Scegli la password" required>
+            </div>
+            <span class="menuContent">
+                <input type="submit" class="logIn" id="loggato" value="Log-in">
+            </span>
+            <span class="menuContent">
+                <span class="logIn" id="closeMenu">Close</span>
+            </span>
+        </form>
+    </div>
+</div>
+<footer>
+    <address>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi repellat quo ex, mollitia dolorem qui officiis. Voluptate, molestias ipsa cumque ducimus delectus laboriosam eaque repellendus repudiandae optio accusamus similique quo!</address>
+    <div id='prova'>sono una prova</div>
+</footer>
+
+<script type="module">
+
+    var inputNome = document.getElementById("nome");
+    var inputCognome = document.getElementById("cognome");
+    var inputEmail = document.getElementById("email");
+    var inputPassword = document.getElementById("password");
+    var inputIndirizzo = document.getElementById("indirizzo");
+    var inputCitta = document.getElementById("citta");
+    var inputProvincia = document.getElementById("provincia");
+    var bottoneLogIn = document.getElementById("logIn");
+    var form = document.getElementById("form")
+    var bottoneAccedi = document.getElementById("accedi");
+    var menuLog = document.getElementById("overlay")
+    var bottoneChiudi = document.getElementById("closeMenu")
+    var bottoneLoggato = document.getElementById("loggato")
+    var form2 = document.getElementById("form2")
+    var inputEmail2 = document.getElementById("email2");
+    var inputPassword2 = document.getElementById("password2")
+    var parent = document.getElementById("parent")
+    var toggleMenu = document.getElementById("topnav")
+    var linksMenu = document.getElementById("myLinks")
+    var arrUtenti = localStorage.getItem('utente') != null ? JSON.parse(localStorage.getItem('utente')) : []
+
+    class Utente{
+        constructor(nome, cognome, email, password, indirizzo, citta, provincia){
+            this.nome = nome;
+            this.cognome = cognome;
+            this.email = email;
+            this.password = password;
+            this.indirizzo = indirizzo;
+            this.citta = citta;
+            this.provincia = provincia
+        }
+    }
+
+    form.addEventListener('submit', function(el){
+        el.preventDefault();
+        var esiste = false;
+        arrUtenti.forEach(function(object){
+            if(inputEmail.value == object.email){
+                esiste = true;
+                alert('sei già registrato')
+            }
+        })
+        if(esiste == false){ //creato == false
+            var utente = new Utente(
+            inputNome.value,
+            inputCognome.value,
+            inputEmail.value,
+            inputPassword.value,
+            inputIndirizzo.value,
+            inputCitta.value,
+            inputProvincia.value);
+
+            arrUtenti.push(utente)
+            localStorage.setItem('utente', JSON.stringify(arrUtenti));
+            location.assign('benvenuto.html')
+        }
+        
+    })
+
+    //CREO EVENTO SU BOTTONE ACCEDI PER FAR APPARIRE IL MENU LOG IN
+    bottoneAccedi.addEventListener('click', function(any){
+        any.preventDefault();
+        menuLog.style.display = 'block';
+    })
+    //CREO EVENT PER CHIUDERE IL MENU LOG in
+    bottoneChiudi.addEventListener('click', function(some){
+        some.preventDefault();
+        menuLog.style.display = 'none';
+    })
+    //creo evento al form2 di log in menu nascosto
+    //faccio controllo
+    // re-indirizzamento
+    var emailLoggate = [];
+    var pLoggate = [];
+    form2.addEventListener('submit', function (many){
+        many.preventDefault();
+        var utenteEsistente = false;
+        arrUtenti.forEach(function (item){
+            if(inputEmail2.value == item.email && inputPassword2.value == item.password){
+                emailLoggate.push(inputEmail2.value);
+                pLoggate.push(inputPassword2.value);
+                localStorage.setItem('email', JSON.stringify(emailLoggate))
+                localStorage.setItem('password', JSON.stringify(pLoggate))
+                console.log(inputPassword2.value);
+                location.assign('area-personale.html');
+                utenteEsistente = true;
+            }
+        })
+        if(utenteEsistente == false){
+                var errorMessage = document.createElement('div');
+                errorMessage.innerHTML = '* Inserisci email o password corretti';
+                errorMessage.style.fontSize = '12px';
+                errorMessage.style.fontWeight = 'bold';
+                errorMessage.style.marginBottom = '10px';
+                parent.appendChild(errorMessage) ;
+            }
+        
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id='vidCont'>
+        <video autoplay muted loop id='bg-video'>
+            <source src='./assets/media/video.mp4' type='video/mp4'>
+        </video>
+    </div>
+    <div id='formCont'>
+        <div id='home-link' class='absolute'>
+            <a href='index.html'><img src='./assets/icon/go-back.png' alt='home icon'></a>
+        </div>
+        AREA PERSONALE
+
+        <div id="divDati">
+            <form method="post" action="php" id="form">
+            <div class="form">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome" readonly required>
+            </div>
+            <div class="form">
+                <label for="cognome">Cognome:</label>
+                <input type="text" name="cognome" id="cognome" readonly required>
+            </div>
+            <div class="form">
+                <label for="email">E-mail:</label>
+                <input type="text" name="email" id="email" readonly required>
+            </div>
+            <div class="form">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" readonly required>
+            </div>
+            <div class="form">
+                <label for="indirizzo">Addresses:</label>
+                <input type="address" name="Indirizzo" id="indirizzo" readonly required>
+            </div>
+            <div class="form">
+                <label for="citta">Città:</label>
+                <input type="text" name="citta" id="citta" readonly required>
+            </div>
+            <div class="form">
+                <label for="provincia">Provincia:</label>
+                <input type="text" name="provincia" id="provincia" readonly required>
+            </div>
+            <div class="form">
+                <input type="submit" class="logIn" id="modifica" value="Modifica i tuoi dati">
+                <span class="logIn" id="salva">Salva modifiche</span>
+            </div>
+        </form>
+    </div>
+    </div>
+    <footer class='flex'>
+        <div id='shrink'>
+            <h3>Chi Siamo</h3>
+            <address>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi repellat quo ex, mollitia dolorem qui officiis. Voluptate, molestias ipsa cumque ducimus delectus laboriosam eaque repellendus repudiandae optio accusamus similique quo!</address>
+        </div>
+        <div>
+            <h3>Contattaci</h3>
+            <div>
+                <img src='./assets/icon/location.png' alt='Location icon'> Via Tal dei Tali 1, Milano, MI.
+            </div>
+            <div>
+                <img src='./assets/icon/phone-call.png' alt='Phone icon'> +39 1234567890
+            </div>
+            <div>
+                <img src='./assets/icon/email.png' alt='Email icon'> tal.deitali@gmial.com
+            </div>
+        </div>
+        <div id='social'>
+            <h3>Seguici</h3>
+            <div>
+                <div>
+                    <a href='http://www.twitter.com'><img src='./assets/icon/twitter.png' alt='Twitter icon'></a>
+                    <a href='http://www.facebook.com'><img src='./assets/icon/facebook.png' alt='Facebook icon'></a>
+                </div>
+                <div>
+                    <a href='http://www.instagram.com'><img src='./assets/icon/instagram.png' alt='Instagram icon'></a>
+                    <a href='http://www.youtube.com'><img src='./assets/icon/youtube.png' alt='Youtube icon'></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type='module'>
+        //import
+        import { createEl, append, scrivi } from './moduli/global-functions.js';
+        
+        var utenteLoggato = JSON.parse(localStorage.getItem('email'));
+        var users = JSON.parse(localStorage.getItem('utente'))
+        var divDati = document.getElementById('divDati');
+    var inputNode = document.querySelectorAll('input');
+    var inputArr = Array.from(inputNode);
+    var bottoneMod = document.getElementById('modifica');
+    var bottoneSalva = document.getElementById('salva');
+    var toggleMenu = document.getElementById("topnav")
+    
+    users.forEach(function(user){
+        if(utenteLoggato == user.email){
+            scrivi(inputArr[0],user.nome)
+            scrivi(inputArr[1],user.cognome)
+            scrivi(inputArr[2],user.email)
+            scrivi(inputArr[3],user.password)
+            scrivi(inputArr[4],user.indirizzo)
+            scrivi(inputArr[5],user.citta)
+            scrivi(inputArr[6],user.provincia)
+        }
+    })
+
+    //evento per bottone modifica
+    bottoneMod.addEventListener('click', function(any){
+        any.preventDefault();
+        if(bottoneSalva.style.display == 'none'){
+            bottoneSalva.style.display = 'inline';
+            inputArr.forEach(input => input.removeAttribute('readonly'));
+        }else{
+            bottoneSalva.style.display = 'none'
+        }
+    })
+    //evento bottone salva modifiche
+    bottoneSalva.addEventListener('click', function(some){
+        some.preventDefault();
+
+        var emailInUse = false;
+        for(var i=0; i < users.length; i++){
+            if(users[i].email == inputArr[2].value){
+                emailInUse = true;
+            }
+        }
+        if(!emailInUse){
+            users.forEach(function(user, ind){
+                if(user.email == utenteLoggato.toString()){
+                    users[ind] = {nome : inputArr[0].value, cognome : inputArr[1].value, email : inputArr[2].value, password : inputArr[3].value, indirizzo : inputArr[4].value, citta : inputArr[5].value, provincia : inputArr[6].value} 
+                    
+                    alert('modifiche salvate')
+                }
+                
+            })
+        }else{
+            alert("email in uso")
+        }
+        })
+</script>
+</body>
+
+</html>
